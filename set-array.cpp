@@ -1,6 +1,8 @@
 #include <iostream>
 #include <bits/stdc++.h>
 
+
+//normal binary search to find the position of the given value in an array
 int* binary_search(int* start, int* end, int value){
     if(start == end){
         return NULL;
@@ -17,8 +19,14 @@ int* binary_search(int* start, int* end, int value){
     }
 }
 
+//using a version of binary search to find
+//the first element position bigger or equal to the value.
+//equivalnt to a lower_bound function
 int* binary_search2(int* start, int* end, int value){
-    if(start+1 == end || start == NULL){
+    if(start > end){
+        return NULL;
+    }
+    if(start == end){
         return start;
     }
     int size = std::distance(start,end);
@@ -30,7 +38,7 @@ int* binary_search2(int* start, int* end, int value){
     if(s < value){
         return binary_search2((start+mid+1), end, value);
     } else {
-        return binary_search2(start, start+mid-1, value);
+        return binary_search2(start, start+mid, value);
     }
 }
 
@@ -53,9 +61,16 @@ class set{
         }
         void insert(int x) {
             int *pos = lower_bound(x);
-            if(pos == NULL || *pos != x){
+            if(pos == NULL){
                 int* inter = (int*)malloc(sizeof(int)*(size+1));
-                for(int i = 0; i < pos-space;i++) inter[i] = space[i];
+                for(int i = 0; i < size;i++) inter[i] = space[i];
+                inter[size] = x;
+                free(space);
+                space = inter;
+                size++;
+            } else if(*pos != x){
+                int* inter = (int*)malloc(sizeof(int)*(size+1));
+                for(int i = 0; i < (pos-space);i++) inter[i] = space[i];
                 inter[pos-space] = x;
                 for(int i = pos-space+1; i < size+1;i++) inter[i] = space[i-1];
                 free(space);
@@ -81,6 +96,9 @@ class set{
         int* begin() {return space;}
         int* end() {return space+size;}
         int length() {return size;}
+        ~set(){
+            free(space);
+        }
 };
 
 void printset(int* start, int* end){
@@ -92,11 +110,15 @@ void printset(int* start, int* end){
 
 int main(){
     set a;
-    a.insert(1);
-    for(int i = 0;i < 20;i++){
-        std::cout << binary_search2(a.begin(), a.end(), i)-a.begin() << '\n';
-        a.insert(i);
-        printset(a.begin(), a.end());
+    srand((unsigned)time(NULL));
+    //std::cout << binary_search2(a.begin(), a.end(), 0);
+    /*for(int i = 0; i < 100000; i++){
+        a.insert(rand()%100000);
+    }*/
+    std::cout << "my set done";
+    std::set<int> b;
+    for(int i = 0; i < 100000; i++){
+        b.insert(rand()%100000);
     }
     return 0;
 }
